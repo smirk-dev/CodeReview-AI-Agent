@@ -259,10 +259,6 @@ class CodeReviewOrchestrator:
 
 def main():
     """Main function demonstrating the CodeReview-AI-Agent system."""
-    print("\n" + "="*70)
-    print("  CodeReview-AI-Agent: Multi-Agent Code Review System")
-    print("  Kaggle Agents Intensive Capstone Project 2025")
-    print("="*70)
     
     # Example code to review
     sample_code = '''def calculate_user_score(user_data):
@@ -285,21 +281,14 @@ def process_payment(amount, card_number, cvv):
         # Run code review
         results = orchestrator.review_code(sample_code, language="python")
         
-        # Display results
-        print("\n📊 Review Summary:")
-        print(f"   Total Agents: {results['summary']['total_agents']}")
-        print(f"   Successful: {results['summary']['successful_agents']}")
-        print(f"   Issues Found: {results['summary']['issues_found']}")
-        print(f"   Recommendations: {results['summary']['recommendations_count']}")
-        
-        # Save results to file
-        output_file = f"review_results_{results['session_id'][:8]}.json"
-        with open(output_file, 'w') as f:
-            json.dump(results, f, indent=2)
-        print(f"\n💾 Results saved to: {output_file}")
+        print(f"\n💾 Multiple report formats generated!")
+        print(f"   - JSON: review_results_{results['session_id'][:8]}.json")
+        print(f"   - HTML: review_report_{results['session_id'][:8]}.html")
+        print(f"   - Markdown: review_report_{results['session_id'][:8]}.md")
+        print(f"   - SARIF: review_report_{results['session_id'][:8]}.sarif")
         
     except Exception as e:
-        print(f"\n❌ Error: {str(e)}")
+        rich_output.print_error(f"Error: {str(e)}")
         sys.exit(1)
 
 

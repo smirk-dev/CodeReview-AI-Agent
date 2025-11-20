@@ -4,12 +4,30 @@
 # Core ADK and Google AI
 google-genai>=0.2.0
 
+# Utility libraries
+python-dotenv>=1.0.0
+
+# Rich terminal output (new)
+rich>=13.0.0
+
+# Async/parallel execution (new)
+aiohttp>=3.9.0
+
+# GitHub integration (new)
+PyGithub>=2.1.0
+
+# Static analysis tools (new)
+pylint>=3.0.0
+flake8>=7.0.0
+mypy>=1.8.0
+safety>=3.0.0
+
+# Report generation (new)
+jinja2>=3.1.0
+
 # Code analysis tools
 # Note: ast is part of Python standard library
 # radon is optional for advanced complexity metrics
-
-# Utility libraries
-python-dotenv>=1.0.0
 
 # For observability and logging (all part of standard library)
 # - logging (standard library)
