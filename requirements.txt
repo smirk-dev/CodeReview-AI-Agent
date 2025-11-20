@@ -1,0 +1,13 @@
+# CodeReview-AI-Agent Dependencies
+# Kaggle Agents Intensive Capstone Project 2025
+
+# Core ADK and Google AI
+google-genai>=0.2.0
+
+# Additional dependencies for code analysis
+ast-comments>=1.1.0
+radon>=6.0.1
+
+# Utility libraries
+python-dotenv>=1.0.0
+pydantic>=2.0.0
