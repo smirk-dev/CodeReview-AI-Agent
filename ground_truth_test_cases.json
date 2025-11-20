@@ -1,0 +1,149 @@
+{
+  "description": "Ground truth test cases for agent evaluation with labeled issues",
+  "version": "1.0",
+  "created_at": "2025-11-20",
+  "test_cases": [
+    {
+      "id": "test_001",
+      "name": "Simple Function - Good Quality",
+      "code": "def add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b",
+      "language": "python",
+      "expected_issues": [],
+      "expected_severity": "none",
+      "description": "Clean, simple function with good documentation",
+      "category": "quality"
+    },
+    {
+      "id": "test_002",
+      "name": "SQL Injection Vulnerability",
+      "code": "def get_user(user_id):\n    query = \"SELECT * FROM users WHERE id = %s\" % user_id\n    return execute(query)",
+      "language": "python",
+      "expected_issues": [
+        {
+          "issue_type": "sql_injection",
+          "severity": "critical",
+          "line_number": 2,
+          "description": "String formatting in SQL query enables SQL injection"
+        }
+      ],
+      "expected_severity": "critical",
+      "description": "SQL injection vulnerability using string formatting",
+      "category": "security"
+    },
+    {
+      "id": "test_003",
+      "name": "High Complexity Function",
+      "code": "def complex_function(data):\n    result = 0\n    for item in data:\n        if item > 0:\n            if item < 10:\n                result += item\n            elif item < 20:\n                result += item * 2\n            else:\n                result += item * 3\n        elif item < 0:\n            if item > -10:\n                result -= item\n            else:\n                result -= item * 2\n    return result",
+      "language": "python",
+      "expected_issues": [
+        {
+          "issue_type": "high_complexity",
+          "severity": "medium",
+          "description": "High cyclomatic complexity"
+        },
+        {
+          "issue_type": "deep_nesting",
+          "severity": "medium",
+          "description": "Deeply nested conditionals"
+        }
+      ],
+      "expected_severity": "medium",
+      "description": "Function with high cyclomatic complexity",
+      "category": "complexity"
+    },
+    {
+      "id": "test_004",
+      "name": "Hardcoded Secrets",
+      "code": "def connect_database():\n    password = \"SuperSecret123!\"\n    api_key = \"sk-1234567890abcdef\"\n    return connect(password=password, api_key=api_key)",
+      "language": "python",
+      "expected_issues": [
+        {
+          "issue_type": "hardcoded_secret",
+          "severity": "high",
+          "line_number": 2,
+          "description": "Hardcoded password"
+        },
+        {
+          "issue_type": "hardcoded_secret",
+          "severity": "high",
+          "line_number": 3,
+          "description": "Hardcoded API key"
+        }
+      ],
+      "expected_severity": "high",
+      "description": "Hardcoded passwords and API keys",
+      "category": "security"
+    },
+    {
+      "id": "test_005",
+      "name": "Poor Documentation",
+      "code": "def process_data(data, config, flags):\n    x = data[0]\n    y = config.get('y')\n    if flags & 0x01:\n        return x + y\n    return x - y",
+      "language": "python",
+      "expected_issues": [
+        {
+          "issue_type": "missing_docstring",
+          "severity": "low",
+          "description": "Function lacks documentation"
+        },
+        {
+          "issue_type": "unclear_variable_names",
+          "severity": "low",
+          "description": "Single-letter variable names"
+        }
+      ],
+      "expected_severity": "low",
+      "description": "Poorly documented function with unclear variable names",
+      "category": "style"
+    },
+    {
+      "id": "test_006",
+      "name": "Command Injection Risk",
+      "code": "import os\ndef execute_command(user_input):\n    os.system(f\"ls {user_input}\")",
+      "language": "python",
+      "expected_issues": [
+        {
+          "issue_type": "command_injection",
+          "severity": "critical",
+          "line_number": 3,
+          "description": "User input directly in system command"
+        }
+      ],
+      "expected_severity": "critical",
+      "description": "Command injection vulnerability",
+      "category": "security"
+    },
+    {
+      "id": "test_007",
+      "name": "Unhandled Exceptions",
+      "code": "def divide(a, b):\n    return a / b\n\ndef parse_json(text):\n    return json.loads(text)",
+      "language": "python",
+      "expected_issues": [
+        {
+          "issue_type": "unhandled_exception",
+          "severity": "medium",
+          "line_number": 2,
+          "description": "Division by zero not handled"
+        },
+        {
+          "issue_type": "unhandled_exception",
+          "severity": "medium",
+          "line_number": 5,
+          "description": "JSON parsing errors not handled"
+        }
+      ],
+      "expected_severity": "medium",
+      "description": "Functions that can raise exceptions without handling",
+      "category": "quality"
+    },
+    {
+      "id": "test_008",
+      "name": "Perfect Code - No Issues",
+      "code": "def calculate_average(numbers: List[float]) -> float:\n    \"\"\"Calculate the average of a list of numbers.\n    \n    Args:\n        numbers: List of numbers to average\n    \n    Returns:\n        The average value\n    \n    Raises:\n        ValueError: If list is empty\n    \"\"\"\n    if not numbers:\n        raise ValueError(\"Cannot calculate average of empty list\")\n    \n    return sum(numbers) / len(numbers)",
+      "language": "python",
+      "expected_issues": [],
+      "expected_severity": "none",
+      "description": "Well-documented function with error handling",
+      "category": "quality"
+    }
+  ]
+}

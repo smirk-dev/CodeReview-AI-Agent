@@ -1,43 +1,68 @@
 """Evaluation framework for assessing agent performance.
 
 This module provides evaluation capabilities:
-- Agent accuracy assessment
+- Agent accuracy assessment with precision, recall, F1 scores
 - Response quality metrics
 - Performance benchmarking
-- Test case management
+- Test case management with ground truth
+- Detailed performance analytics
 """
 
 import json
 import time
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Set
 from dataclasses import dataclass, asdict
 from datetime import datetime
+from collections import defaultdict
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
+class GroundTruthIssue:
+    """Ground truth issue for evaluation."""
+    issue_type: str
+    severity: str
+    line_number: Optional[int] = None
+    description: Optional[str] = None
+
+
+@dataclass
 class TestCase:
-    """Test case for code review evaluation."""
+    """Test case for code review evaluation with ground truth."""
     id: str
     name: str
     code: str
     language: str
-    expected_issues: List[str]
+    expected_issues: List[GroundTruthIssue]
     expected_severity: str
     description: str
+    category: str = "general"  # security, complexity, quality, style
+
+
+@dataclass
+class PerformanceMetrics:
+    """Detailed performance metrics."""
+    precision: float
+    recall: float
+    f1_score: float
+    true_positives: int
+    false_positives: int
+    false_negatives: int
+    accuracy: float
 
 
 @dataclass
 class EvaluationResult:
-    """Result of an evaluation run."""
+    """Result of an evaluation run with detailed metrics."""
     test_case_id: str
     test_case_name: str
+    category: str
     execution_time: float
     issues_found: int
     issues_expected: int
-    accuracy_score: float
+    metrics: PerformanceMetrics
     quality_score: int
     passed: bool
     details: Dict[str, Any]
@@ -71,20 +96,34 @@ class AgentEvaluator:
             data = json.load(f)
         
         for tc_data in data.get('test_cases', []):
+            # Convert expected_issues to GroundTruthIssue objects
+            expected_issues = []
+            for issue_data in tc_data.get('expected_issues', []):
+                if isinstance(issue_data, str):
+                    # Legacy format: convert string to object
+                    expected_issues.append(GroundTruthIssue(
+                        issue_type=issue_data,
+                        severity=tc_data.get('expected_severity', 'medium')
+                    ))
+                else:
+                    # New format: create from dict
+                    expected_issues.append(GroundTruthIssue(**issue_data))
+            
+            tc_data['expected_issues'] = expected_issues
             test_case = TestCase(**tc_data)
             self.add_test_case(test_case)
         
         logger.info(f"Loaded {len(self.test_cases)} test cases from {filepath}")
     
     def evaluate(self, orchestrator, test_case: TestCase) -> EvaluationResult:
-        """Evaluate orchestrator on a single test case.
+        """Evaluate orchestrator on a single test case with detailed metrics.
         
         Args:
             orchestrator: CodeReviewOrchestrator instance
             test_case: Test case to evaluate
         
         Returns:
-            EvaluationResult
+            EvaluationResult with precision, recall, F1 scores
         """
         logger.info(f"Evaluating test case: {test_case.name}")
         
@@ -96,35 +135,42 @@ class AgentEvaluator:
             
             execution_time = time.time() - start_time
             
-            # Count issues found
-            issues_found = results.get('summary', {}).get('issues_found', 0)
+            # Extract found issues
+            found_issues = self._extract_found_issues(results)
+            
+            # Calculate performance metrics
+            metrics = self._calculate_metrics(found_issues, test_case.expected_issues)
+            
+            # Get quality score
             quality_score = results.get('agents', {}).get('quality_reviewer', {}).get('quality_score', 0)
             
-            # Calculate accuracy (how well it matches expected issues)
-            expected_count = len(test_case.expected_issues)
-            accuracy_score = self._calculate_accuracy(results, test_case)
-            
-            # Determine if passed
-            passed = accuracy_score >= 0.7 and quality_score > 0
+            # Determine if passed (F1 >= 0.7 or perfect match)
+            passed = metrics.f1_score >= 0.7 or (
+                metrics.true_positives > 0 and 
+                metrics.false_positives == 0 and 
+                metrics.false_negatives == 0
+            )
             
             result = EvaluationResult(
                 test_case_id=test_case.id,
                 test_case_name=test_case.name,
+                category=test_case.category,
                 execution_time=execution_time,
-                issues_found=issues_found,
-                issues_expected=expected_count,
-                accuracy_score=accuracy_score,
+                issues_found=len(found_issues),
+                issues_expected=len(test_case.expected_issues),
+                metrics=metrics,
                 quality_score=quality_score,
                 passed=passed,
                 details={
-                    'results': results,
-                    'expected_issues': test_case.expected_issues,
-                    'expected_severity': test_case.expected_severity
+                    'found_issues': [asdict(i) for i in found_issues],
+                    'expected_issues': [asdict(i) for i in test_case.expected_issues],
+                    'results': results
                 }
             )
             
             self.results.append(result)
-            logger.info(f"Test case completed: {test_case.name} - {'PASSED' if passed else 'FAILED'}")
+            logger.info(f"Test case completed: {test_case.name} - {'PASSED' if passed else 'FAILED'} "
+                       f"(F1={metrics.f1_score:.2f}, P={metrics.precision:.2f}, R={metrics.recall:.2f})")
             
             return result
             
@@ -132,13 +178,22 @@ class AgentEvaluator:
             logger.error(f"Error evaluating test case {test_case.name}: {e}")
             execution_time = time.time() - start_time
             
+            # Create empty metrics for failed case
+            metrics = PerformanceMetrics(
+                precision=0.0, recall=0.0, f1_score=0.0,
+                true_positives=0, false_positives=0,
+                false_negatives=len(test_case.expected_issues),
+                accuracy=0.0
+            )
+            
             result = EvaluationResult(
                 test_case_id=test_case.id,
                 test_case_name=test_case.name,
+                category=test_case.category,
                 execution_time=execution_time,
                 issues_found=0,
                 issues_expected=len(test_case.expected_issues),
-                accuracy_score=0.0,
+                metrics=metrics,
                 quality_score=0,
                 passed=False,
                 details={'error': str(e)}
@@ -147,43 +202,72 @@ class AgentEvaluator:
             self.results.append(result)
             return result
     
-    def _calculate_accuracy(self, results: Dict, test_case: TestCase) -> float:
-        """Calculate accuracy score.
+    def _extract_found_issues(self, results: Dict) -> List[GroundTruthIssue]:
+        """Extract issues from review results.
         
         Args:
-            results: Review results
-            test_case: Test case with expected results
+            results: Review results dictionary
         
         Returns:
-            Accuracy score (0.0 to 1.0)
+            List of GroundTruthIssue objects
         """
-        # Simple accuracy: ratio of found vs expected
-        issues_found = results.get('summary', {}).get('issues_found', 0)
-        expected_count = len(test_case.expected_issues)
+        found_issues = []
         
-        if expected_count == 0:
-            return 1.0 if issues_found == 0 else 0.5
-        
-        # Calculate based on how close we are
-        ratio = min(issues_found, expected_count) / expected_count
-        
-        # Check if we found the right types of issues
-        found_types = set()
-        for agent_result in results.get('agents', {}).values():
+        for agent_name, agent_result in results.get('agents', {}).items():
             if 'issues' in agent_result:
                 for issue in agent_result['issues']:
-                    if 'type' in issue:
-                        found_types.add(issue['type'])
-                    elif 'issue_type' in issue:
-                        found_types.add(issue['issue_type'])
+                    issue_type = issue.get('type') or issue.get('issue_type', 'unknown')
+                    severity = issue.get('severity', 'medium').lower()
+                    line = issue.get('line')
+                    description = issue.get('description', '')
+                    
+                    found_issues.append(GroundTruthIssue(
+                        issue_type=issue_type,
+                        severity=severity,
+                        line_number=line,
+                        description=description
+                    ))
         
-        expected_types = set(test_case.expected_issues)
-        type_match = len(found_types & expected_types) / len(expected_types) if expected_types else 0
+        return found_issues
+    
+    def _calculate_metrics(self, found: List[GroundTruthIssue], 
+                          expected: List[GroundTruthIssue]) -> PerformanceMetrics:
+        """Calculate precision, recall, F1, and other metrics.
         
-        # Combine ratios
-        accuracy = (ratio * 0.6) + (type_match * 0.4)
+        Args:
+            found: List of found issues
+            expected: List of expected issues (ground truth)
         
-        return round(accuracy, 2)
+        Returns:
+            PerformanceMetrics with all calculated metrics
+        """
+        # Convert to sets of issue types for comparison
+        found_types = set(issue.issue_type for issue in found)
+        expected_types = set(issue.issue_type for issue in expected)
+        
+        # Calculate TP, FP, FN
+        true_positives = len(found_types & expected_types)
+        false_positives = len(found_types - expected_types)
+        false_negatives = len(expected_types - found_types)
+        
+        # Calculate precision, recall, F1
+        precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
+        recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0.0
+        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+        
+        # Calculate overall accuracy
+        total = true_positives + false_positives + false_negatives
+        accuracy = true_positives / total if total > 0 else 0.0
+        
+        return PerformanceMetrics(
+            precision=round(precision, 3),
+            recall=round(recall, 3),
+            f1_score=round(f1_score, 3),
+            true_positives=true_positives,
+            false_positives=false_positives,
+            false_negatives=false_negatives,
+            accuracy=round(accuracy, 3)
+        )
     
     def evaluate_all(self, orchestrator) -> Dict[str, Any]:
         """Evaluate orchestrator on all test cases.
@@ -207,10 +291,10 @@ class AgentEvaluator:
         return summary
     
     def generate_summary(self) -> Dict[str, Any]:
-        """Generate evaluation summary.
+        """Generate comprehensive evaluation summary with detailed metrics.
         
         Returns:
-            Summary dictionary with statistics
+            Summary dictionary with statistics and breakdowns
         """
         if not self.results:
             return {'message': 'No evaluation results available'}
@@ -219,23 +303,67 @@ class AgentEvaluator:
         passed = sum(1 for r in self.results if r.passed)
         failed = total - passed
         
+        # Aggregate metrics
         avg_execution_time = sum(r.execution_time for r in self.results) / total
-        avg_accuracy = sum(r.accuracy_score for r in self.results) / total
+        avg_precision = sum(r.metrics.precision for r in self.results) / total
+        avg_recall = sum(r.metrics.recall for r in self.results) / total
+        avg_f1 = sum(r.metrics.f1_score for r in self.results) / total
         avg_quality_score = sum(r.quality_score for r in self.results) / total
+        
+        # Count totals
+        total_tp = sum(r.metrics.true_positives for r in self.results)
+        total_fp = sum(r.metrics.false_positives for r in self.results)
+        total_fn = sum(r.metrics.false_negatives for r in self.results)
+        
+        # Category breakdown
+        categories = defaultdict(lambda: {'count': 0, 'passed': 0, 'f1_scores': []})
+        for r in self.results:
+            categories[r.category]['count'] += 1
+            if r.passed:
+                categories[r.category]['passed'] += 1
+            categories[r.category]['f1_scores'].append(r.metrics.f1_score)
+        
+        category_summary = {
+            cat: {
+                'total': data['count'],
+                'passed': data['passed'],
+                'pass_rate': round((data['passed'] / data['count']) * 100, 2),
+                'avg_f1': round(sum(data['f1_scores']) / len(data['f1_scores']), 3)
+            }
+            for cat, data in categories.items()
+        }
         
         summary = {
             'total_tests': total,
             'passed': passed,
             'failed': failed,
             'pass_rate': round((passed / total) * 100, 2),
-            'average_execution_time': round(avg_execution_time, 3),
-            'average_accuracy': round(avg_accuracy, 2),
-            'average_quality_score': round(avg_quality_score, 2),
-            'results': [
+            'metrics': {
+                'precision': round(avg_precision, 3),
+                'recall': round(avg_recall, 3),
+                'f1_score': round(avg_f1, 3),
+                'true_positives': total_tp,
+                'false_positives': total_fp,
+                'false_negatives': total_fn
+            },
+            'performance': {
+                'average_execution_time': round(avg_execution_time, 3),
+                'average_quality_score': round(avg_quality_score, 2),
+            },
+            'category_breakdown': category_summary,
+            'detailed_results': [
                 {
                     'test_case': r.test_case_name,
+                    'category': r.category,
                     'passed': r.passed,
-                    'accuracy': r.accuracy_score,
+                    'metrics': {
+                        'precision': r.metrics.precision,
+                        'recall': r.metrics.recall,
+                        'f1_score': r.metrics.f1_score,
+                        'tp': r.metrics.true_positives,
+                        'fp': r.metrics.false_positives,
+                        'fn': r.metrics.false_negatives
+                    },
                     'quality_score': r.quality_score,
                     'execution_time': round(r.execution_time, 3)
                 }
@@ -246,35 +374,70 @@ class AgentEvaluator:
         return summary
     
     def print_summary(self):
-        """Print evaluation summary to console."""
+        """Print detailed evaluation summary to console with metrics."""
         summary = self.generate_summary()
         
-        print("\n" + "="*70)
-        print("📊 Agent Evaluation Summary")
-        print("="*70)
+        print("\n" + "="*80)
+        print("📊 Agent Evaluation Summary - Detailed Metrics")
+        print("="*80)
         
         if 'message' in summary:
             print(f"\n{summary['message']}")
             return
         
-        print(f"\nTotal Tests: {summary['total_tests']}")
-        print(f"✅ Passed: {summary['passed']}")
-        print(f"❌ Failed: {summary['failed']}")
-        print(f"📈 Pass Rate: {summary['pass_rate']}%")
+        # Overall statistics
+        print(f"\n📈 Overall Results:")
+        print(f"   Total Tests: {summary['total_tests']}")
+        print(f"   ✅ Passed: {summary['passed']}")
+        print(f"   ❌ Failed: {summary['failed']}")
+        print(f"   📊 Pass Rate: {summary['pass_rate']}%")
         
-        print(f"\n⏱️  Average Execution Time: {summary['average_execution_time']}s")
-        print(f"🎯 Average Accuracy: {summary['average_accuracy']}")
-        print(f"⭐ Average Quality Score: {summary['average_quality_score']}/100")
+        # Performance metrics
+        metrics = summary['metrics']
+        print(f"\n🎯 Performance Metrics:")
+        print(f"   Precision:  {metrics['precision']:.3f} (how many found issues are correct)")
+        print(f"   Recall:     {metrics['recall']:.3f} (how many real issues were found)")
+        print(f"   F1 Score:   {metrics['f1_score']:.3f} (harmonic mean of P & R)")
+        print(f"   True Positives:  {metrics['true_positives']} (correct detections)")
+        print(f"   False Positives: {metrics['false_positives']} (incorrect detections)")
+        print(f"   False Negatives: {metrics['false_negatives']} (missed issues)")
         
-        print("\n📋 Individual Results:")
-        for result in summary['results']:
+        # Performance stats
+        perf = summary['performance']
+        print(f"\n⏱️  Performance:")
+        print(f"   Avg Execution Time: {perf['average_execution_time']}s")
+        print(f"   Avg Quality Score:  {perf['average_quality_score']}/100")
+        
+        # Category breakdown
+        if summary.get('category_breakdown'):
+            print(f"\n📁 Category Breakdown:")
+            for cat, data in summary['category_breakdown'].items():
+                print(f"   {cat.capitalize():12} | Tests: {data['total']:2} | "
+                      f"Pass Rate: {data['pass_rate']:5.1f}% | "
+                      f"Avg F1: {data['avg_f1']:.3f}")
+        
+        # Individual results
+        print("\n📋 Individual Test Results:")
+        print(f"   {'Test Case':<35} {'Pass':<6} {'P':<6} {'R':<6} {'F1':<6} {'Q':<4} {'Time':<7}")
+        print(f"   {'-'*78}")
+        
+        for result in summary['detailed_results']:
             status = "✅" if result['passed'] else "❌"
-            print(f"   {status} {result['test_case']}: "
-                  f"Accuracy={result['accuracy']}, "
-                  f"Quality={result['quality_score']}, "
-                  f"Time={result['execution_time']}s")
+            m = result['metrics']
+            name = result['test_case'][:33]
+            print(f"   {name:<35} {status:<6} "
+                  f"{m['precision']:<6.3f} {m['recall']:<6.3f} {m['f1_score']:<6.3f} "
+                  f"{result['quality_score']:<4} {result['execution_time']:<7.3f}s")
         
-        print("="*70)
+        print("="*80)
+        
+        # Interpretation guide
+        print("\n💡 Metrics Guide:")
+        print("   P (Precision) = TP / (TP + FP)  - Accuracy of detections")
+        print("   R (Recall)    = TP / (TP + FN)  - Coverage of real issues")
+        print("   F1 Score      = 2 * (P * R) / (P + R) - Overall performance")
+        print("   Q (Quality)   = Code quality score from agents")
+        print("="*80 + "\n")
     
     def export_results(self, filepath: str):
         """Export evaluation results to JSON.
@@ -293,10 +456,10 @@ class AgentEvaluator:
 
 
 def create_default_test_cases() -> List[TestCase]:
-    """Create a default set of test cases.
+    """Create a default set of test cases with ground truth labels.
     
     Returns:
-        List of TestCase instances
+        List of TestCase instances with detailed ground truth
     """
     test_cases = [
         TestCase(
@@ -308,7 +471,8 @@ def create_default_test_cases() -> List[TestCase]:
             language="python",
             expected_issues=[],
             expected_severity="none",
-            description="Clean, simple function with good documentation"
+            description="Clean, simple function with good documentation",
+            category="quality"
         ),
         TestCase(
             id="test_002",
@@ -317,9 +481,17 @@ def create_default_test_cases() -> List[TestCase]:
     query = "SELECT * FROM users WHERE id = %s" % user_id
     return execute(query)""",
             language="python",
-            expected_issues=["sql_injection"],
+            expected_issues=[
+                GroundTruthIssue(
+                    issue_type="sql_injection",
+                    severity="critical",
+                    line_number=2,
+                    description="String formatting in SQL query enables SQL injection"
+                )
+            ],
             expected_severity="critical",
-            description="SQL injection vulnerability using string formatting"
+            description="SQL injection vulnerability using string formatting",
+            category="security"
         ),
         TestCase(
             id="test_003",
@@ -341,9 +513,21 @@ def create_default_test_cases() -> List[TestCase]:
                 result -= item * 2
     return result""",
             language="python",
-            expected_issues=["high_complexity", "deep_nesting"],
+            expected_issues=[
+                GroundTruthIssue(
+                    issue_type="high_complexity",
+                    severity="medium",
+                    description="High cyclomatic complexity"
+                ),
+                GroundTruthIssue(
+                    issue_type="deep_nesting",
+                    severity="medium",
+                    description="Deeply nested conditionals"
+                )
+            ],
             expected_severity="medium",
-            description="Function with high cyclomatic complexity"
+            description="Function with high cyclomatic complexity",
+            category="complexity"
         ),
         TestCase(
             id="test_004",
@@ -353,9 +537,23 @@ def create_default_test_cases() -> List[TestCase]:
     api_key = "sk-1234567890abcdef"
     return connect(password=password, api_key=api_key)""",
             language="python",
-            expected_issues=["hardcoded_secret"],
+            expected_issues=[
+                GroundTruthIssue(
+                    issue_type="hardcoded_secret",
+                    severity="high",
+                    line_number=2,
+                    description="Hardcoded password"
+                ),
+                GroundTruthIssue(
+                    issue_type="hardcoded_secret",
+                    severity="high",
+                    line_number=3,
+                    description="Hardcoded API key"
+                )
+            ],
             expected_severity="high",
-            description="Hardcoded passwords and API keys"
+            description="Hardcoded passwords and API keys",
+            category="security"
         ),
         TestCase(
             id="test_005",
@@ -367,9 +565,67 @@ def create_default_test_cases() -> List[TestCase]:
         return x + y
     return x - y""",
             language="python",
-            expected_issues=["todo_comment", "long_function"],
+            expected_issues=[
+                GroundTruthIssue(
+                    issue_type="missing_docstring",
+                    severity="low",
+                    description="Function lacks documentation"
+                ),
+                GroundTruthIssue(
+                    issue_type="unclear_variable_names",
+                    severity="low",
+                    description="Single-letter variable names"
+                )
+            ],
             expected_severity="low",
-            description="Poorly documented function with unclear variable names"
+            description="Poorly documented function with unclear variable names",
+            category="style"
+        ),
+        TestCase(
+            id="test_006",
+            name="Command Injection Risk",
+            code="""import os
+def execute_command(user_input):
+    os.system(f"ls {user_input}")""",
+            language="python",
+            expected_issues=[
+                GroundTruthIssue(
+                    issue_type="command_injection",
+                    severity="critical",
+                    line_number=3,
+                    description="User input directly in system command"
+                )
+            ],
+            expected_severity="critical",
+            description="Command injection vulnerability",
+            category="security"
+        ),
+        TestCase(
+            id="test_007",
+            name="Unhandled Exceptions",
+            code="""def divide(a, b):
+    return a / b
+
+def parse_json(text):
+    return json.loads(text)""",
+            language="python",
+            expected_issues=[
+                GroundTruthIssue(
+                    issue_type="unhandled_exception",
+                    severity="medium",
+                    line_number=2,
+                    description="Division by zero not handled"
+                ),
+                GroundTruthIssue(
+                    issue_type="unhandled_exception",
+                    severity="medium",
+                    line_number=5,
+                    description="JSON parsing errors not handled"
+                )
+            ],
+            expected_severity="medium",
+            description="Functions that can raise exceptions without handling",
+            category="quality"
         ),
     ]
     

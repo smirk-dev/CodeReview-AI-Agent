@@ -205,3 +205,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project-specific: Generated Reports and Test Results
+reports/
+test_results/
+review_report_*.html
+review_report_*.md
+review_report_*.sarif
+review_results_*.json
+evaluation_results.json
+test_metrics.json
+test_traces.json
+logs/*.log
