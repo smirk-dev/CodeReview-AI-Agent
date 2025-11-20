@@ -39,6 +39,11 @@ from tools.code_tools import CodeAnalysisTools
 from utils.session_manager import SessionManager
 from utils.memory_bank import MemoryBank
 from utils.observability import get_observability
+from utils.rich_output import rich_output
+from utils.report_generator import report_generator
+from utils.retry_handler import with_retry, GracefulDegradation
+from utils.multi_language import multi_language_analyzer
+from utils.github_integration import github_integration, GitHubActionsHelper
 
 
 class CodeReviewOrchestrator:
@@ -83,8 +88,12 @@ class CodeReviewOrchestrator:
         self.quality_reviewer = QualityReviewerAgent(self.client, self.code_tools)
         
         self.logger.info("CodeReview-AI-Agent system initialized")
-        print("✓ CodeReview-AI-Agent system initialized")
-        print(f"✓ Using Gemini models for multi-agent workflow")
+        rich_output.print_header(
+            "CodeReview-AI-Agent System",
+            "Multi-Agent Code Review with AI"
+        )
+        rich_output.print_success("CodeReview-AI-Agent system initialized")
+        rich_output.print_success("Using Gemini models for multi-agent workflow")
     
     def review_code(self, code: str, language: str = "python", 
                    session_id: Optional[str] = None) -> Dict:
@@ -103,15 +112,21 @@ class CodeReviewOrchestrator:
         Returns:
             Dict containing comprehensive review results from all agents
         """
-        print("\n" + "="*70)
-        print("🤖 Starting Multi-Agent Code Review Pipeline")
-        print("="*70)
+        rich_output.print_header(
+            "Multi-Agent Code Review Pipeline",
+            f"Language: {language}"
+        )
         
         self.logger.info(f"Starting code review pipeline for {language}")
         
+        # Auto-detect language if needed
+        if language == "auto":
+            language = multi_language_analyzer.detect_language(code)
+            rich_output.print_info(f"Detected language: {language}")
+        
         # Create or resume session
         session = self.session_manager.get_or_create_session(session_id)
-        print(f"\n📋 Session ID: {session['id']}")
+        rich_output.print_info(f"Session ID: {session['id']}")
         
         # Store code in memory for all agents to access
         self.memory_bank.store("current_code", {
@@ -128,21 +143,21 @@ class CodeReviewOrchestrator:
         }
         
         # Agent 1: Code Analysis
-        print("\n[1/3] 🔍 Running CodeAnalyzerAgent...")
+        rich_output.print_agent_start("CodeAnalyzerAgent", "[1/3]")
         try:
             with self.observability.trace_operation("code_analysis", language=language):
                 analysis_result = self.code_analyzer.analyze(code, language)
             results["agents"]["code_analyzer"] = analysis_result
             self.memory_bank.store("analysis_result", analysis_result)
-            print("   ✓ Code analysis complete")
+            rich_output.print_success("Code analysis complete")
             self.logger.info("Code analysis completed successfully")
         except Exception as e:
-            print(f"   ✗ Code analysis failed: {str(e)}")
+            rich_output.print_error(f"Code analysis failed: {str(e)}")
             self.logger.error(f"Code analysis failed: {e}", exc_info=True)
             results["agents"]["code_analyzer"] = {"error": str(e)}
         
         # Agent 2: Security Check
-        print("\n[2/3] 🔒 Running SecurityCheckerAgent...")
+        rich_output.print_agent_start("SecurityCheckerAgent", "[2/3]")
         try:
             with self.observability.trace_operation("security_check", language=language):
                 # Pass previous agent results for context
@@ -153,15 +168,15 @@ class CodeReviewOrchestrator:
                 )
             results["agents"]["security_checker"] = security_result
             self.memory_bank.store("security_result", security_result)
-            print("   ✓ Security check complete")
+            rich_output.print_success("Security check complete")
             self.logger.info("Security check completed successfully")
         except Exception as e:
-            print(f"   ✗ Security check failed: {str(e)}")
+            rich_output.print_error(f"Security check failed: {str(e)}")
             self.logger.error(f"Security check failed: {e}", exc_info=True)
             results["agents"]["security_checker"] = {"error": str(e)}
         
         # Agent 3: Quality Review
-        print("\n[3/3] ⭐ Running QualityReviewerAgent...")
+        rich_output.print_agent_start("QualityReviewerAgent", "[3/3]")
         try:
             with self.observability.trace_operation("quality_review", language=language):
                 # Provide full context from previous agents
@@ -174,10 +189,10 @@ class CodeReviewOrchestrator:
                     }
                 )
             results["agents"]["quality_reviewer"] = quality_result
-            print("   ✓ Quality review complete")
+            rich_output.print_success("Quality review complete")
             self.logger.info("Quality review completed successfully")
         except Exception as e:
-            print(f"   ✗ Quality review failed: {str(e)}")
+            rich_output.print_error(f"Quality review failed: {str(e)}")
             self.logger.error(f"Quality review failed: {e}", exc_info=True)
             results["agents"]["quality_reviewer"] = {"error": str(e)}
         
@@ -187,9 +202,31 @@ class CodeReviewOrchestrator:
         # Update session with results
         self.session_manager.update_session(session['id'], results)
         
-        print("\n" + "="*70)
-        print("✅ Multi-Agent Code Review Complete")
-        print("="*70)
+        # Display rich results
+        rich_output.print_results(results)
+        
+        # Generate reports
+        session_short = results['session_id'][:8]
+        
+        # Save JSON
+        json_file = f"review_results_{session_short}.json"
+        with open(json_file, 'w') as f:
+            json.dump(results, f, indent=2)
+        
+        # Generate HTML report
+        html_file = f"review_report_{session_short}.html"
+        report_generator.generate_html_report(results, html_file)
+        rich_output.print_success(f"HTML report: {html_file}")
+        
+        # Generate Markdown for GitHub
+        md_file = f"review_report_{session_short}.md"
+        report_generator.generate_markdown_report(results, md_file)
+        rich_output.print_success(f"Markdown report: {md_file}")
+        
+        # Generate SARIF for IDEs
+        sarif_file = f"review_report_{session_short}.sarif"
+        report_generator.generate_sarif_report(results, sarif_file)
+        rich_output.print_success(f"SARIF report: {sarif_file}")
         
         return results
     
