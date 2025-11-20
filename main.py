@@ -17,20 +17,19 @@ from typing import Dict, List, Optional
 import json
 from datetime import datetime
 
-# Import ADK components
+# Import Google GenAI components
 try:
     from google import genai
     from google.genai import types
-    from google.genai.adk import (
-        Agent,
-        Tool,
-        FunctionDeclaration,
-        InMemorySessionService,
-        Session
-    )
 except ImportError:
-    print("Error: Please install the ADK package: pip install google-genai")
+    print("Error: Please install google-genai: pip install google-genai")
     sys.exit(1)
+
+# Simple session service implementation (ADK-like interface)
+class InMemorySessionService:
+    """Simple in-memory session service."""
+    def __init__(self):
+        self.sessions = {}
 
 # Import custom agents and tools
 from agents.code_analyzer import CodeAnalyzerAgent

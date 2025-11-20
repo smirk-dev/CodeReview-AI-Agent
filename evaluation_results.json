@@ -1,0 +1,600 @@
+{
+  "total_tests": 5,
+  "passed": 2,
+  "failed": 3,
+  "pass_rate": 40.0,
+  "average_execution_time": 0.594,
+  "average_accuracy": 0.4,
+  "average_quality_score": 96.4,
+  "results": [
+    {
+      "test_case": "Simple Function - Good Quality",
+      "passed": true,
+      "accuracy": 1.0,
+      "quality_score": 100,
+      "execution_time": 0.738
+    },
+    {
+      "test_case": "SQL Injection Vulnerability",
+      "passed": false,
+      "accuracy": 0.0,
+      "quality_score": 100,
+      "execution_time": 0.559
+    },
+    {
+      "test_case": "High Complexity Function",
+      "passed": false,
+      "accuracy": 0.0,
+      "quality_score": 97,
+      "execution_time": 0.556
+    },
+    {
+      "test_case": "Hardcoded Secrets",
+      "passed": true,
+      "accuracy": 1.0,
+      "quality_score": 85,
+      "execution_time": 0.556
+    },
+    {
+      "test_case": "Poor Documentation",
+      "passed": false,
+      "accuracy": 0.0,
+      "quality_score": 100,
+      "execution_time": 0.564
+    }
+  ],
+  "exported_at": "2025-11-20T16:20:43.488456",
+  "detailed_results": [
+    {
+      "test_case_id": "test_001",
+      "test_case_name": "Simple Function - Good Quality",
+      "execution_time": 0.7377116680145264,
+      "issues_found": 0,
+      "issues_expected": 0,
+      "accuracy_score": 1.0,
+      "quality_score": 100,
+      "passed": true,
+      "details": {
+        "results": {
+          "session_id": "44796b88-bfd6-4f98-93f9-6d82d7ef0e8e",
+          "language": "python",
+          "timestamp": "2025-11-20T16:20:40.514407",
+          "agents": {
+            "code_analyzer": {
+              "status": "success",
+              "language": "python",
+              "metrics": {
+                "lines_of_code": 3,
+                "num_functions": 1,
+                "num_classes": 0,
+                "total_complexity": 1,
+                "max_function_complexity": 1,
+                "average_function_complexity": 1.0
+              },
+              "functions": [
+                {
+                  "name": "add",
+                  "line_number": 1,
+                  "num_parameters": 2,
+                  "complexity": 1,
+                  "has_docstring": true
+                }
+              ],
+              "code_smells": [],
+              "summary": "Code contains 3 lines with 1 functions. Complexity score: 1.",
+              "issues": [],
+              "recommendations": []
+            },
+            "security_checker": {
+              "status": "success",
+              "language": "python",
+              "vulnerabilities": [],
+              "risk_level": "none",
+              "summary": "Security scan found 0 vulnerabilities with none risk level.",
+              "issues": [],
+              "recommendations": [
+                "No major security vulnerabilities detected. Continue following security best practices."
+              ],
+              "security_score": 100
+            },
+            "quality_reviewer": {
+              "status": "success",
+              "language": "python",
+              "quality_score": 100,
+              "quality_grade": "A",
+              "strengths": [
+                "Low cyclomatic complexity - code is maintainable",
+                "Well documented (100% functions have docstrings)",
+                "No code smells detected",
+                "No security vulnerabilities detected"
+              ],
+              "weaknesses": [],
+              "improvements": [],
+              "summary": "Code quality grade: A (100/100). 4 strengths, 0 areas for improvement.",
+              "issues": [],
+              "recommendations": [
+                "\u2705 Code is in good shape! Minor improvements would make it excellent."
+              ],
+              "priority_matrix": {
+                "critical": [],
+                "high": [],
+                "medium": [],
+                "low": []
+              }
+            }
+          },
+          "summary": {
+            "total_agents": 3,
+            "successful_agents": 3,
+            "issues_found": 0,
+            "severity_levels": {},
+            "recommendations_count": 2
+          }
+        },
+        "expected_issues": [],
+        "expected_severity": "none"
+      }
+    },
+    {
+      "test_case_id": "test_002",
+      "test_case_name": "SQL Injection Vulnerability",
+      "execution_time": 0.5590009689331055,
+      "issues_found": 0,
+      "issues_expected": 1,
+      "accuracy_score": 0.0,
+      "quality_score": 100,
+      "passed": false,
+      "details": {
+        "results": {
+          "session_id": "4e40b98a-6c60-4424-a860-513fdd3685cd",
+          "language": "python",
+          "timestamp": "2025-11-20T16:20:41.249398",
+          "agents": {
+            "code_analyzer": {
+              "status": "success",
+              "language": "python",
+              "metrics": {
+                "lines_of_code": 3,
+                "num_functions": 1,
+                "num_classes": 0,
+                "total_complexity": 1,
+                "max_function_complexity": 1,
+                "average_function_complexity": 1.0
+              },
+              "functions": [
+                {
+                  "name": "get_user",
+                  "line_number": 1,
+                  "num_parameters": 1,
+                  "complexity": 1,
+                  "has_docstring": false
+                }
+              ],
+              "code_smells": [],
+              "summary": "Code contains 3 lines with 1 functions. Complexity score: 1.",
+              "issues": [],
+              "recommendations": [
+                "Many functions lack documentation. Add docstrings to improve code maintainability."
+              ]
+            },
+            "security_checker": {
+              "status": "success",
+              "language": "python",
+              "vulnerabilities": [],
+              "risk_level": "none",
+              "summary": "Security scan found 0 vulnerabilities with none risk level.",
+              "issues": [],
+              "recommendations": [
+                "No major security vulnerabilities detected. Continue following security best practices."
+              ],
+              "security_score": 100
+            },
+            "quality_reviewer": {
+              "status": "success",
+              "language": "python",
+              "quality_score": 100,
+              "quality_grade": "A",
+              "strengths": [
+                "Low cyclomatic complexity - code is maintainable",
+                "No code smells detected",
+                "No security vulnerabilities detected"
+              ],
+              "weaknesses": [
+                "Poor documentation (0% functions have docstrings)"
+              ],
+              "improvements": [],
+              "summary": "Code quality grade: A (100/100). 3 strengths, 1 areas for improvement.",
+              "issues": [],
+              "recommendations": [
+                "\ud83d\udcdd Improve code documentation with comprehensive docstrings.",
+                "\u2705 Code is in good shape! Minor improvements would make it excellent."
+              ],
+              "priority_matrix": {
+                "critical": [],
+                "high": [],
+                "medium": [],
+                "low": []
+              }
+            }
+          },
+          "summary": {
+            "total_agents": 3,
+            "successful_agents": 3,
+            "issues_found": 0,
+            "severity_levels": {},
+            "recommendations_count": 4
+          }
+        },
+        "expected_issues": [
+          "sql_injection"
+        ],
+        "expected_severity": "critical"
+      }
+    },
+    {
+      "test_case_id": "test_003",
+      "test_case_name": "High Complexity Function",
+      "execution_time": 0.5561654567718506,
+      "issues_found": 0,
+      "issues_expected": 2,
+      "accuracy_score": 0.0,
+      "quality_score": 97,
+      "passed": false,
+      "details": {
+        "results": {
+          "session_id": "c702f4ca-440f-4fcc-955d-0afd7e184c4e",
+          "language": "python",
+          "timestamp": "2025-11-20T16:20:41.809641",
+          "agents": {
+            "code_analyzer": {
+              "status": "success",
+              "language": "python",
+              "metrics": {
+                "lines_of_code": 16,
+                "num_functions": 1,
+                "num_classes": 0,
+                "total_complexity": 7,
+                "max_function_complexity": 7,
+                "average_function_complexity": 7.0
+              },
+              "functions": [
+                {
+                  "name": "complex_function",
+                  "line_number": 1,
+                  "num_parameters": 1,
+                  "complexity": 7,
+                  "has_docstring": false
+                }
+              ],
+              "code_smells": [],
+              "summary": "Code contains 16 lines with 1 functions. Complexity score: 7.",
+              "issues": [],
+              "recommendations": [
+                "Average complexity is 7.0. Aim to keep functions simple and focused.",
+                "Many functions lack documentation. Add docstrings to improve code maintainability."
+              ]
+            },
+            "security_checker": {
+              "status": "success",
+              "language": "python",
+              "vulnerabilities": [],
+              "risk_level": "none",
+              "summary": "Security scan found 0 vulnerabilities with none risk level.",
+              "issues": [],
+              "recommendations": [
+                "No major security vulnerabilities detected. Continue following security best practices."
+              ],
+              "security_score": 100
+            },
+            "quality_reviewer": {
+              "status": "success",
+              "language": "python",
+              "quality_score": 97,
+              "quality_grade": "A",
+              "strengths": [
+                "No code smells detected",
+                "No security vulnerabilities detected"
+              ],
+              "weaknesses": [
+                "Poor documentation (0% functions have docstrings)"
+              ],
+              "improvements": [],
+              "summary": "Code quality grade: A (97/100). 2 strengths, 1 areas for improvement.",
+              "issues": [],
+              "recommendations": [
+                "\ud83d\udcdd Improve code documentation with comprehensive docstrings.",
+                "\u2705 Code is in good shape! Minor improvements would make it excellent."
+              ],
+              "priority_matrix": {
+                "critical": [],
+                "high": [],
+                "medium": [],
+                "low": []
+              }
+            }
+          },
+          "summary": {
+            "total_agents": 3,
+            "successful_agents": 3,
+            "issues_found": 0,
+            "severity_levels": {},
+            "recommendations_count": 5
+          }
+        },
+        "expected_issues": [
+          "high_complexity",
+          "deep_nesting"
+        ],
+        "expected_severity": "medium"
+      }
+    },
+    {
+      "test_case_id": "test_004",
+      "test_case_name": "Hardcoded Secrets",
+      "execution_time": 0.5556824207305908,
+      "issues_found": 4,
+      "issues_expected": 1,
+      "accuracy_score": 1.0,
+      "quality_score": 85,
+      "passed": true,
+      "details": {
+        "results": {
+          "session_id": "8665b8a6-e091-4844-b1e5-30c01b721f4d",
+          "language": "python",
+          "timestamp": "2025-11-20T16:20:42.366738",
+          "agents": {
+            "code_analyzer": {
+              "status": "success",
+              "language": "python",
+              "metrics": {
+                "lines_of_code": 4,
+                "num_functions": 1,
+                "num_classes": 0,
+                "total_complexity": 1,
+                "max_function_complexity": 1,
+                "average_function_complexity": 1.0
+              },
+              "functions": [
+                {
+                  "name": "connect_database",
+                  "line_number": 1,
+                  "num_parameters": 0,
+                  "complexity": 1,
+                  "has_docstring": false
+                }
+              ],
+              "code_smells": [],
+              "summary": "Code contains 4 lines with 1 functions. Complexity score: 1.",
+              "issues": [],
+              "recommendations": [
+                "Many functions lack documentation. Add docstrings to improve code maintainability."
+              ]
+            },
+            "security_checker": {
+              "status": "success",
+              "language": "python",
+              "vulnerabilities": [
+                {
+                  "severity": "high",
+                  "type": "hardcoded_secret",
+                  "line": 2,
+                  "description": "Hardcoded secret or credential detected",
+                  "recommendation": "Use environment variables or secret management service"
+                },
+                {
+                  "severity": "high",
+                  "type": "hardcoded_secret",
+                  "line": 3,
+                  "description": "Hardcoded secret or credential detected",
+                  "recommendation": "Use environment variables or secret management service"
+                }
+              ],
+              "risk_level": "high",
+              "summary": "Security scan found 2 vulnerabilities with high risk level.",
+              "issues": [
+                {
+                  "severity": "high",
+                  "type": "hardcoded_secret",
+                  "line": 2,
+                  "description": "Hardcoded secret or credential detected",
+                  "recommendation": "Use environment variables or secret management service"
+                },
+                {
+                  "severity": "high",
+                  "type": "hardcoded_secret",
+                  "line": 3,
+                  "description": "Hardcoded secret or credential detected",
+                  "recommendation": "Use environment variables or secret management service"
+                }
+              ],
+              "recommendations": [
+                "Hardcoded secrets detected (2 instances). Move secrets to environment variables or a secure vault."
+              ],
+              "security_score": 70
+            },
+            "quality_reviewer": {
+              "status": "success",
+              "language": "python",
+              "quality_score": 85,
+              "quality_grade": "B",
+              "strengths": [
+                "Low cyclomatic complexity - code is maintainable",
+                "No code smells detected"
+              ],
+              "weaknesses": [
+                "Poor documentation (0% functions have docstrings)",
+                "Security risk level: high"
+              ],
+              "improvements": [
+                {
+                  "category": "Security",
+                  "severity": "high",
+                  "line": 2,
+                  "issue": "Hardcoded secret or credential detected",
+                  "improvement": "Use environment variables or secret management service",
+                  "priority": 3
+                },
+                {
+                  "category": "Security",
+                  "severity": "high",
+                  "line": 3,
+                  "issue": "Hardcoded secret or credential detected",
+                  "improvement": "Use environment variables or secret management service",
+                  "priority": 3
+                }
+              ],
+              "summary": "Code quality grade: B (85/100). 2 strengths, 2 areas for improvement.",
+              "issues": [
+                {
+                  "category": "Security",
+                  "severity": "high",
+                  "line": 2,
+                  "issue": "Hardcoded secret or credential detected",
+                  "improvement": "Use environment variables or secret management service",
+                  "priority": 3
+                },
+                {
+                  "category": "Security",
+                  "severity": "high",
+                  "line": 3,
+                  "issue": "Hardcoded secret or credential detected",
+                  "improvement": "Use environment variables or secret management service",
+                  "priority": 3
+                }
+              ],
+              "recommendations": [
+                "\ud83d\udd12 Address 2 critical security issues immediately.",
+                "\ud83d\udcdd Improve code documentation with comprehensive docstrings."
+              ],
+              "priority_matrix": {
+                "critical": [],
+                "high": [
+                  {
+                    "type": "security",
+                    "description": "Hardcoded secret or credential detected",
+                    "line": 2
+                  },
+                  {
+                    "type": "security",
+                    "description": "Hardcoded secret or credential detected",
+                    "line": 3
+                  }
+                ],
+                "medium": [],
+                "low": []
+              }
+            }
+          },
+          "summary": {
+            "total_agents": 3,
+            "successful_agents": 3,
+            "issues_found": 4,
+            "severity_levels": {},
+            "recommendations_count": 4
+          }
+        },
+        "expected_issues": [
+          "hardcoded_secret"
+        ],
+        "expected_severity": "high"
+      }
+    },
+    {
+      "test_case_id": "test_005",
+      "test_case_name": "Poor Documentation",
+      "execution_time": 0.5637345314025879,
+      "issues_found": 0,
+      "issues_expected": 2,
+      "accuracy_score": 0.0,
+      "quality_score": 100,
+      "passed": false,
+      "details": {
+        "results": {
+          "session_id": "af347f40-ca39-4d0d-ba0c-3dbaf87766d0",
+          "language": "python",
+          "timestamp": "2025-11-20T16:20:42.925612",
+          "agents": {
+            "code_analyzer": {
+              "status": "success",
+              "language": "python",
+              "metrics": {
+                "lines_of_code": 6,
+                "num_functions": 1,
+                "num_classes": 0,
+                "total_complexity": 2,
+                "max_function_complexity": 2,
+                "average_function_complexity": 2.0
+              },
+              "functions": [
+                {
+                  "name": "process_data",
+                  "line_number": 1,
+                  "num_parameters": 3,
+                  "complexity": 2,
+                  "has_docstring": false
+                }
+              ],
+              "code_smells": [],
+              "summary": "Code contains 6 lines with 1 functions. Complexity score: 2.",
+              "issues": [],
+              "recommendations": [
+                "Many functions lack documentation. Add docstrings to improve code maintainability."
+              ]
+            },
+            "security_checker": {
+              "status": "success",
+              "language": "python",
+              "vulnerabilities": [],
+              "risk_level": "none",
+              "summary": "Security scan found 0 vulnerabilities with none risk level.",
+              "issues": [],
+              "recommendations": [
+                "No major security vulnerabilities detected. Continue following security best practices."
+              ],
+              "security_score": 100
+            },
+            "quality_reviewer": {
+              "status": "success",
+              "language": "python",
+              "quality_score": 100,
+              "quality_grade": "A",
+              "strengths": [
+                "Low cyclomatic complexity - code is maintainable",
+                "No code smells detected",
+                "No security vulnerabilities detected"
+              ],
+              "weaknesses": [
+                "Poor documentation (0% functions have docstrings)"
+              ],
+              "improvements": [],
+              "summary": "Code quality grade: A (100/100). 3 strengths, 1 areas for improvement.",
+              "issues": [],
+              "recommendations": [
+                "\ud83d\udcdd Improve code documentation with comprehensive docstrings.",
+                "\u2705 Code is in good shape! Minor improvements would make it excellent."
+              ],
+              "priority_matrix": {
+                "critical": [],
+                "high": [],
+                "medium": [],
+                "low": []
+              }
+            }
+          },
+          "summary": {
+            "total_agents": 3,
+            "successful_agents": 3,
+            "issues_found": 0,
+            "severity_levels": {},
+            "recommendations_count": 4
+          }
+        },
+        "expected_issues": [
+          "todo_comment",
+          "long_function"
+        ],
+        "expected_severity": "low"
+      }
+    }
+  ]
+}

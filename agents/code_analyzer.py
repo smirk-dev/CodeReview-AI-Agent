@@ -8,7 +8,6 @@ This agent specializes in:
 """
 
 from typing import Dict, List, Optional, Any
-from google.genai import types
 import logging
 
 logger = logging.getLogger(__name__)

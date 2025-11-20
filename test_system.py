@@ -308,7 +308,7 @@ def run_full_evaluation():
 def main():
     """Run all tests."""
     print("\n" + "="*70)
-    print("🧪 CodeReview-AI-Agent System Tests")
+    print("CodeReview-AI-Agent System Tests")
     print("="*70)
     
     # Check for API key

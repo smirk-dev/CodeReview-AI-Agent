@@ -1,0 +1,385 @@
+[
+  {
+    "trace_id": "code_analysis_1763635828798",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:28.798244",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.5861361026763916,
+    "end_time": "2025-11-20T16:20:29.384385"
+  },
+  {
+    "trace_id": "security_check_1763635829388",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:29.388298",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.33219051361083984,
+    "end_time": "2025-11-20T16:20:29.720494"
+  },
+  {
+    "trace_id": "quality_review_1763635829722",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:29.722574",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.17589068412780762,
+    "end_time": "2025-11-20T16:20:29.898467"
+  },
+  {
+    "trace_id": "basic_review_test_1763635828796",
+    "operation": "basic_review_test",
+    "start_time": "2025-11-20T16:20:28.796080",
+    "metadata": {},
+    "status": "success",
+    "duration_seconds": 1.1060945987701416,
+    "end_time": "2025-11-20T16:20:29.902162"
+  },
+  {
+    "trace_id": "code_analysis_1763635830757",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:30.757637",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.45331287384033203,
+    "end_time": "2025-11-20T16:20:31.210958"
+  },
+  {
+    "trace_id": "security_check_1763635831213",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:31.213440",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.18410754203796387,
+    "end_time": "2025-11-20T16:20:31.397550"
+  },
+  {
+    "trace_id": "quality_review_1763635831399",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:31.399456",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.2685706615447998,
+    "end_time": "2025-11-20T16:20:31.668035"
+  },
+  {
+    "trace_id": "code_analysis_1763635832666",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:32.666407",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.334003210067749,
+    "end_time": "2025-11-20T16:20:33.000415"
+  },
+  {
+    "trace_id": "security_check_1763635833002",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:33.002414",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.30936312675476074,
+    "end_time": "2025-11-20T16:20:33.311780"
+  },
+  {
+    "trace_id": "quality_review_1763635833313",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:33.313530",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.19678211212158203,
+    "end_time": "2025-11-20T16:20:33.510314"
+  },
+  {
+    "trace_id": "code_analysis_1763635834766",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:34.766899",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.5109407901763916,
+    "end_time": "2025-11-20T16:20:35.277845"
+  },
+  {
+    "trace_id": "security_check_1763635835280",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:35.280130",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.21129608154296875,
+    "end_time": "2025-11-20T16:20:35.491438"
+  },
+  {
+    "trace_id": "quality_review_1763635835494",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:35.494091",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.19402003288269043,
+    "end_time": "2025-11-20T16:20:35.688116"
+  },
+  {
+    "trace_id": "test_operation_1763635836679",
+    "operation": "test_operation",
+    "start_time": "2025-11-20T16:20:36.679899",
+    "metadata": {
+      "test_param": "value"
+    },
+    "status": "success",
+    "duration_seconds": 0.10103964805603027,
+    "end_time": "2025-11-20T16:20:36.780951"
+  },
+  {
+    "trace_id": "code_analysis_1763635837766",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:37.766347",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.45522189140319824,
+    "end_time": "2025-11-20T16:20:38.221571"
+  },
+  {
+    "trace_id": "security_check_1763635838225",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:38.225113",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.19638895988464355,
+    "end_time": "2025-11-20T16:20:38.421504"
+  },
+  {
+    "trace_id": "quality_review_1763635838424",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:38.425008",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.30588436126708984,
+    "end_time": "2025-11-20T16:20:38.730893"
+  },
+  {
+    "trace_id": "code_analysis_1763635838738",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:38.738538",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.18987345695495605,
+    "end_time": "2025-11-20T16:20:38.928421"
+  },
+  {
+    "trace_id": "security_check_1763635838931",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:38.931417",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.4155552387237549,
+    "end_time": "2025-11-20T16:20:39.346973"
+  },
+  {
+    "trace_id": "quality_review_1763635839348",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:39.348485",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.17351245880126953,
+    "end_time": "2025-11-20T16:20:39.522003"
+  },
+  {
+    "trace_id": "code_analysis_1763635840514",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:40.514799",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.36370062828063965,
+    "end_time": "2025-11-20T16:20:40.878502"
+  },
+  {
+    "trace_id": "security_check_1763635840879",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:40.879689",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.16141223907470703,
+    "end_time": "2025-11-20T16:20:41.041109"
+  },
+  {
+    "trace_id": "quality_review_1763635841044",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:41.044452",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.1993427276611328,
+    "end_time": "2025-11-20T16:20:41.243797"
+  },
+  {
+    "trace_id": "code_analysis_1763635841249",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:41.249741",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.1874382495880127,
+    "end_time": "2025-11-20T16:20:41.437181"
+  },
+  {
+    "trace_id": "security_check_1763635841438",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:41.438972",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.20252299308776855,
+    "end_time": "2025-11-20T16:20:41.641500"
+  },
+  {
+    "trace_id": "quality_review_1763635841643",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:41.643286",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.15956783294677734,
+    "end_time": "2025-11-20T16:20:41.802858"
+  },
+  {
+    "trace_id": "code_analysis_1763635841810",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:41.810198",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.17538881301879883,
+    "end_time": "2025-11-20T16:20:41.985591"
+  },
+  {
+    "trace_id": "security_check_1763635841988",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:41.988332",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.1734328269958496,
+    "end_time": "2025-11-20T16:20:42.161769"
+  },
+  {
+    "trace_id": "quality_review_1763635842163",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:42.163410",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.19781064987182617,
+    "end_time": "2025-11-20T16:20:42.361223"
+  },
+  {
+    "trace_id": "code_analysis_1763635842367",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:42.367189",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.18396592140197754,
+    "end_time": "2025-11-20T16:20:42.551156"
+  },
+  {
+    "trace_id": "security_check_1763635842553",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:42.553425",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.16863656044006348,
+    "end_time": "2025-11-20T16:20:42.722067"
+  },
+  {
+    "trace_id": "quality_review_1763635842724",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:42.724757",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.19186973571777344,
+    "end_time": "2025-11-20T16:20:42.916629"
+  },
+  {
+    "trace_id": "code_analysis_1763635842926",
+    "operation": "code_analysis",
+    "start_time": "2025-11-20T16:20:42.926411",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.17862558364868164,
+    "end_time": "2025-11-20T16:20:43.105044"
+  },
+  {
+    "trace_id": "security_check_1763635843109",
+    "operation": "security_check",
+    "start_time": "2025-11-20T16:20:43.109047",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.16765832901000977,
+    "end_time": "2025-11-20T16:20:43.276707"
+  },
+  {
+    "trace_id": "quality_review_1763635843279",
+    "operation": "quality_review",
+    "start_time": "2025-11-20T16:20:43.279636",
+    "metadata": {
+      "language": "python"
+    },
+    "status": "success",
+    "duration_seconds": 0.2029438018798828,
+    "end_time": "2025-11-20T16:20:43.482581"
+  }
+]
