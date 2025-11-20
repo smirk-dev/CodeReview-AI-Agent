@@ -39,6 +39,7 @@ from agents.quality_reviewer import QualityReviewerAgent
 from tools.code_tools import CodeAnalysisTools
 from utils.session_manager import SessionManager
 from utils.memory_bank import MemoryBank
+from utils.observability import get_observability
 
 
 class CodeReviewOrchestrator:
@@ -62,6 +63,10 @@ class CodeReviewOrchestrator:
         if not self.api_key:
             raise ValueError("API key required. Set GOOGLE_AI_API_KEY or pass api_key")
         
+        # Initialize observability
+        self.observability = get_observability()
+        self.logger = self.observability.get_logger(__name__)
+        
         # Initialize client
         self.client = genai.Client(api_key=self.api_key)
         
@@ -78,6 +83,7 @@ class CodeReviewOrchestrator:
         self.security_checker = SecurityCheckerAgent(self.client, self.code_tools)
         self.quality_reviewer = QualityReviewerAgent(self.client, self.code_tools)
         
+        self.logger.info("CodeReview-AI-Agent system initialized")
         print("✓ CodeReview-AI-Agent system initialized")
         print(f"✓ Using Gemini models for multi-agent workflow")
     
@@ -102,6 +108,8 @@ class CodeReviewOrchestrator:
         print("🤖 Starting Multi-Agent Code Review Pipeline")
         print("="*70)
         
+        self.logger.info(f"Starting code review pipeline for {language}")
+        
         # Create or resume session
         session = self.session_manager.get_or_create_session(session_id)
         print(f"\n📋 Session ID: {session['id']}")
@@ -123,46 +131,55 @@ class CodeReviewOrchestrator:
         # Agent 1: Code Analysis
         print("\n[1/3] 🔍 Running CodeAnalyzerAgent...")
         try:
-            analysis_result = self.code_analyzer.analyze(code, language)
+            with self.observability.trace_operation("code_analysis", language=language):
+                analysis_result = self.code_analyzer.analyze(code, language)
             results["agents"]["code_analyzer"] = analysis_result
             self.memory_bank.store("analysis_result", analysis_result)
             print("   ✓ Code analysis complete")
+            self.logger.info("Code analysis completed successfully")
         except Exception as e:
             print(f"   ✗ Code analysis failed: {str(e)}")
+            self.logger.error(f"Code analysis failed: {e}", exc_info=True)
             results["agents"]["code_analyzer"] = {"error": str(e)}
         
         # Agent 2: Security Check
         print("\n[2/3] 🔒 Running SecurityCheckerAgent...")
         try:
-            # Pass previous agent results for context
-            security_result = self.security_checker.check(
-                code, 
-                language,
-                context=self.memory_bank.get("analysis_result")
-            )
+            with self.observability.trace_operation("security_check", language=language):
+                # Pass previous agent results for context
+                security_result = self.security_checker.check(
+                    code, 
+                    language,
+                    context=self.memory_bank.get("analysis_result")
+                )
             results["agents"]["security_checker"] = security_result
             self.memory_bank.store("security_result", security_result)
             print("   ✓ Security check complete")
+            self.logger.info("Security check completed successfully")
         except Exception as e:
             print(f"   ✗ Security check failed: {str(e)}")
+            self.logger.error(f"Security check failed: {e}", exc_info=True)
             results["agents"]["security_checker"] = {"error": str(e)}
         
         # Agent 3: Quality Review
         print("\n[3/3] ⭐ Running QualityReviewerAgent...")
         try:
-            # Provide full context from previous agents
-            quality_result = self.quality_reviewer.review(
-                code,
-                language,
-                context={
-                    "analysis": self.memory_bank.get("analysis_result"),
-                    "security": self.memory_bank.get("security_result")
-                }
-            )
+            with self.observability.trace_operation("quality_review", language=language):
+                # Provide full context from previous agents
+                quality_result = self.quality_reviewer.review(
+                    code,
+                    language,
+                    context={
+                        "analysis": self.memory_bank.get("analysis_result"),
+                        "security": self.memory_bank.get("security_result")
+                    }
+                )
             results["agents"]["quality_reviewer"] = quality_result
             print("   ✓ Quality review complete")
+            self.logger.info("Quality review completed successfully")
         except Exception as e:
             print(f"   ✗ Quality review failed: {str(e)}")
+            self.logger.error(f"Quality review failed: {e}", exc_info=True)
             results["agents"]["quality_reviewer"] = {"error": str(e)}
         
         # Generate final summary

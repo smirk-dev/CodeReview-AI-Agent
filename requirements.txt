@@ -4,10 +4,18 @@
 # Core ADK and Google AI
 google-genai>=0.2.0
 
-# Additional dependencies for code analysis
-ast-comments>=1.1.0
-radon>=6.0.1
+# Code analysis tools
+# Note: ast is part of Python standard library
+# radon is optional for advanced complexity metrics
 
 # Utility libraries
 python-dotenv>=1.0.0
-pydantic>=2.0.0
+
+# For observability and logging (all part of standard library)
+# - logging (standard library)
+# - json (standard library)
+# - time (standard library)
+
+# For evaluation framework (standard library)
+# - dataclasses (standard library)
+# - typing (standard library)
