@@ -394,7 +394,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 👤 Author
 
 **Suryansh Mishra** ([@smirk-dev](https://github.com/smirk-dev))  
-NSUT | Full-Stack Developer | AI/ML Enthusiast
+Full-Stack Developer | AI/ML Enthusiast
 
 ---
 
