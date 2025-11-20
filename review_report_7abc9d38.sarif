@@ -1,0 +1,211 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "CodeReview-AI-Agent",
+          "version": "1.0.0",
+          "informationUri": "https://github.com/smirk-dev/CodeReview-AI-Agent",
+          "rules": [
+            {
+              "id": "CR0001",
+              "name": "print_statement",
+              "shortDescription": {
+                "text": "Using print() for output"
+              },
+              "fullDescription": {
+                "text": "Use logging module for better control"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              }
+            },
+            {
+              "id": "CR0002",
+              "name": "hardcoded_secret",
+              "shortDescription": {
+                "text": "Hardcoded secret or credential detected"
+              },
+              "fullDescription": {
+                "text": "Hardcoded secret or credential detected"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "CR0003",
+              "name": "insecure_function",
+              "shortDescription": {
+                "text": "Use of dangerous function (eval/exec/pickle)"
+              },
+              "fullDescription": {
+                "text": "Use of dangerous function (eval/exec/pickle)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "CR0004",
+              "name": "Unknown",
+              "shortDescription": {
+                "text": ""
+              },
+              "fullDescription": {
+                "text": ""
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "CR0005",
+              "name": "Unknown",
+              "shortDescription": {
+                "text": ""
+              },
+              "fullDescription": {
+                "text": ""
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "CR0006",
+              "name": "Unknown",
+              "shortDescription": {
+                "text": ""
+              },
+              "fullDescription": {
+                "text": ""
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CR0001",
+          "level": "note",
+          "message": {
+            "text": "Using print() for output"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "code.py"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CR0002",
+          "level": "error",
+          "message": {
+            "text": "Hardcoded secret or credential detected"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "code.py"
+                },
+                "region": {
+                  "startLine": 4
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CR0003",
+          "level": "error",
+          "message": {
+            "text": "Use of dangerous function (eval/exec/pickle)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "code.py"
+                },
+                "region": {
+                  "startLine": 6
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CR0004",
+          "level": "error",
+          "message": {
+            "text": ""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "code.py"
+                },
+                "region": {
+                  "startLine": 4
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CR0005",
+          "level": "error",
+          "message": {
+            "text": ""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "code.py"
+                },
+                "region": {
+                  "startLine": 6
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CR0006",
+          "level": "note",
+          "message": {
+            "text": ""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "code.py"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

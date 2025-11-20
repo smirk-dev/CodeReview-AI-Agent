@@ -1,0 +1,193 @@
+{
+  "session_id": "7abc9d38-184a-453e-a0d2-7bc67e844ebf",
+  "language": "python",
+  "timestamp": "2025-11-20T23:09:20.449170",
+  "agents": {
+    "code_analyzer": {
+      "status": "success",
+      "language": "python",
+      "metrics": {
+        "lines_of_code": 8,
+        "num_functions": 1,
+        "num_classes": 0,
+        "total_complexity": 2,
+        "max_function_complexity": 2,
+        "average_function_complexity": 2.0
+      },
+      "functions": [
+        {
+          "name": "calculate_score",
+          "line_number": 2,
+          "num_parameters": 1,
+          "complexity": 2,
+          "has_docstring": false
+        }
+      ],
+      "code_smells": [
+        {
+          "severity": "low",
+          "type": "print_statement",
+          "line": 7,
+          "description": "Using print() for output",
+          "suggestion": "Use logging module for better control"
+        }
+      ],
+      "summary": "Code contains 8 lines with 1 functions. Complexity score: 2.",
+      "issues": [
+        {
+          "severity": "low",
+          "type": "print_statement",
+          "line": 7,
+          "description": "Using print() for output",
+          "suggestion": "Use logging module for better control"
+        }
+      ],
+      "recommendations": [
+        "Many functions lack documentation. Add docstrings to improve code maintainability."
+      ]
+    },
+    "security_checker": {
+      "status": "success",
+      "language": "python",
+      "vulnerabilities": [
+        {
+          "severity": "high",
+          "type": "hardcoded_secret",
+          "line": 4,
+          "description": "Hardcoded secret or credential detected",
+          "recommendation": "Use environment variables or secret management service"
+        },
+        {
+          "severity": "high",
+          "type": "insecure_function",
+          "line": 6,
+          "description": "Use of dangerous function (eval/exec/pickle)",
+          "recommendation": "Avoid eval/exec, use safer alternatives"
+        }
+      ],
+      "risk_level": "high",
+      "summary": "Security scan found 2 vulnerabilities with high risk level.",
+      "issues": [
+        {
+          "severity": "high",
+          "type": "hardcoded_secret",
+          "line": 4,
+          "description": "Hardcoded secret or credential detected",
+          "recommendation": "Use environment variables or secret management service"
+        },
+        {
+          "severity": "high",
+          "type": "insecure_function",
+          "line": 6,
+          "description": "Use of dangerous function (eval/exec/pickle)",
+          "recommendation": "Avoid eval/exec, use safer alternatives"
+        }
+      ],
+      "recommendations": [
+        "Hardcoded secrets detected (1 instances). Move secrets to environment variables or a secure vault.",
+        "Insecure functions detected (1 instances). Replace eval/exec with safer alternatives."
+      ],
+      "security_score": 70
+    },
+    "quality_reviewer": {
+      "status": "success",
+      "language": "python",
+      "quality_score": 84,
+      "quality_grade": "B",
+      "strengths": [
+        "Low cyclomatic complexity - code is maintainable"
+      ],
+      "weaknesses": [
+        "Poor documentation (0% functions have docstrings)",
+        "Security risk level: high"
+      ],
+      "improvements": [
+        {
+          "category": "Security",
+          "severity": "high",
+          "line": 4,
+          "issue": "Hardcoded secret or credential detected",
+          "improvement": "Use environment variables or secret management service",
+          "priority": 3
+        },
+        {
+          "category": "Security",
+          "severity": "high",
+          "line": 6,
+          "issue": "Use of dangerous function (eval/exec/pickle)",
+          "improvement": "Avoid eval/exec, use safer alternatives",
+          "priority": 3
+        },
+        {
+          "category": "Code Quality",
+          "severity": "low",
+          "line": 7,
+          "issue": "Using print() for output",
+          "improvement": "Use logging module for better control",
+          "priority": 1
+        }
+      ],
+      "summary": "Code quality grade: B (84/100). 1 strengths, 2 areas for improvement.",
+      "issues": [
+        {
+          "category": "Security",
+          "severity": "high",
+          "line": 4,
+          "issue": "Hardcoded secret or credential detected",
+          "improvement": "Use environment variables or secret management service",
+          "priority": 3
+        },
+        {
+          "category": "Security",
+          "severity": "high",
+          "line": 6,
+          "issue": "Use of dangerous function (eval/exec/pickle)",
+          "improvement": "Avoid eval/exec, use safer alternatives",
+          "priority": 3
+        },
+        {
+          "category": "Code Quality",
+          "severity": "low",
+          "line": 7,
+          "issue": "Using print() for output",
+          "improvement": "Use logging module for better control",
+          "priority": 1
+        }
+      ],
+      "recommendations": [
+        "\ud83d\udd12 Address 2 critical security issues immediately.",
+        "\ud83d\udcdd Improve code documentation with comprehensive docstrings."
+      ],
+      "priority_matrix": {
+        "critical": [],
+        "high": [
+          {
+            "type": "security",
+            "description": "Hardcoded secret or credential detected",
+            "line": 4
+          },
+          {
+            "type": "security",
+            "description": "Use of dangerous function (eval/exec/pickle)",
+            "line": 6
+          }
+        ],
+        "medium": [],
+        "low": [
+          {
+            "type": "code_quality",
+            "description": "Using print() for output",
+            "line": 7
+          }
+        ]
+      }
+    }
+  },
+  "summary": {
+    "total_agents": 3,
+    "successful_agents": 3,
+    "issues_found": 6,
+    "severity_levels": {},
+    "recommendations_count": 5
+  }
+}
